@@ -1,7 +1,8 @@
 # Ubuntu 22.04 for Deep Learning
 
 Machine setup
-Install Ubuntu 22.04
+Install Ubuntu 22.04 minimal 
+Install and configure openssh server
 Update Ubuntu
 Create Update Script
 Install NVIDIA Drivers for Deep Learning
@@ -26,6 +27,20 @@ Run Very Large Language Models on Your Computer
 
 ----------------------------------------------------------------------------------------------------
 
+**Install and configure openssh server**:
+
+```
+$ sudo apt update
+$ sudo apt install openssh-server
+$ sudo systemctl enable --now ssh
+$ sudo systemctl status ssh
+$ sudo ufw allow ssh
+$ sudo ufw enable && sudo ufw reload
+
+$ git config --global user.name "Your Name"
+$ git config --global user.email "youremail@yourdomain.com"
+```
+
 **Update Ubuntu**:
 
 ```
@@ -33,7 +48,7 @@ $ sudo apt update
 $ sudo apt full-upgrade --yes
 $ sudo apt autoremove --yes
 $ sudo apt autoclean --yes
-$ reboot
+$ sudo reboot
 ```
 ----------------------------------------------------------------------------------------------------
 
@@ -49,14 +64,16 @@ $ sudo lshw -C display
 
 Install NVIDIA GPU Driver:
 
-- Install from GUI: Software & Updates > Additional Drivers > NVIDIA
+- Install from GUI: Software & Updates > Additional Drivers > NVIDIA > nvidia-driver-535 (proprietary,tested)
 
 Try $ sudo ubuntu-drivers autoinstall if NVIDIA drivers are disabled.
 
 You can also install it from the terminal:
 
+I installed CUDA Toolkit 12.4 deb (local)
+
 ```
-$ sudo apt install nvidia-driver-525
+$ sudo apt install nvidia-driver-535
 ```
 
 **Check TensorFlow and CUDA Compatibilities:**:
@@ -71,6 +88,8 @@ $ sudo apt install nvidia-driver-525
 1. Install prerequisites:
 
 ```
+$ sudo apt install build-essential
+
 $ sudo apt install linux-headers-$(uname -r)
 ```
 
@@ -134,11 +153,11 @@ $ python3 -m venv ~/venvs/ml
 
 $ source ~/venvs/ml/bin/activate
 
-(ml) $ pip install — upgrade pip setuptools wheel
+(ml) $ pip install --upgrade pip setuptools wheel
 
-(ml) $ pip install — upgrade numpy scipy matplotlib ipython jupyter pandas sympy nose
+(ml) $ pip install --upgrade numpy scipy matplotlib ipython jupyter pandas sympy nose
 
-(ml) $ pip install — upgrade scikit-learn scikit-image
+(ml) $ pip install --upgrade scikit-learn scikit-image
 
 (ml) $ deactivate
 
@@ -148,15 +167,22 @@ $ source ~/venvs/ml/bin/activate
 https://www.tensorflow.org/install/gpu
 
 ```
+$ sudo apt install python3.10-venv
+
 $ python3 -m venv ~/venvs/tfgpu
 
 $ source ~/venvs/tfgpu/bin/activate
 
-(tfgpu) $ pip install — upgrade pip setuptools wheel
+(tfgpu) $ python3 -m pip install tensorflow[and-cuda]
 
-(tfgpu) $ pip install — upgrade opencv-python opencv-contrib-python
+# Verify the installation:
+python3 -c "import tensorflow as tf; print(tf.config.list_physical_devices('GPU'))"
 
-(tfgpu) $ pip install — upgrade tensorflow tensorboard keras
+(tfgpu) $ pip install --upgrade pip setuptools wheel
+
+(tfgpu) $ pip install --upgrade opencv-python opencv-contrib-python
+
+(tfgpu) $ pip install --upgrade tensorflow tensorboard keras
 
 (tfgpu) $ deactivate
 
@@ -184,11 +210,11 @@ $ python3 -m venv ~/venvs/torchgpu
 
 $ source ~/venvs/torchgpu/bin/activate
 
-(torchgpu) $ pip install — upgrade pip setuptools wheel
+(torchgpu) $ pip install --upgrade pip setuptools wheel
 
-(torchgpu) $ pip install — upgrade opencv-python opencv-contrib-python
+(torchgpu) $ pip install --upgrade opencv-python opencv-contrib-python
 
-(torchgpu) $ pip install — upgrade torch torchvision torchaudio
+(torchgpu) $ pip install --upgrade torch torchvision torchaudio
 
 (torchgpu) $ deactivate
 
